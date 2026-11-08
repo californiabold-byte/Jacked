@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b16">
+<meta name="description" content="Your personal anime physique training, nutrition and progress tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<title>NEON // PHYSIQUE</title>
+<style>
+:root{--bg:#080a14;--panel:#111629;--panel2:#171e34;--line:#293451;--text:#edf2ff;--muted:#9aa8c7;--cyan:#45f3ff;--pink:#ff3dbb;--lime:#b9ff66;--yellow:#ffd166;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -10%,#22264b 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 18px 14px;position:sticky;top:0;z-index:5;background:#080a14ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-weight:900;letter-spacing:.13em;font-size:12px;color:var(--cyan)}h1{font-size:27px;line-height:1.1;margin:7px 0 4px;letter-spacing:-.04em}header p{margin:0;color:var(--muted);font-size:12px}
+nav{display:flex;gap:7px;overflow:auto;padding:12px 14px;position:sticky;top:100px;z-index:4;background:#080a14ed}
+nav button{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:9px 13px;font-weight:700}
+nav button.active{color:#061016;background:var(--cyan);border-color:var(--cyan)}
+main{max-width:900px;margin:auto;padding:8px 14px 90px}.view{display:none}.view.active{display:block}
+.card{background:linear-gradient(145deg,#141b30,#0e1324);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:10px 0;box-shadow:0 8px 26px #0003}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}.eyebrow{font-size:11px;color:var(--cyan);font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.big{font-size:32px;font-weight:900;letter-spacing:-.04em}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--panel2);border:1px solid var(--line);padding:12px;border-radius:14px}.stat strong{display:block;font-size:22px}.stat span{font-size:11px;color:var(--muted)}
+.progress{height:8px;border-radius:20px;background:#252d46;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:20px}
+button,.btn{cursor:pointer}.action{background:var(--cyan);color:#071017;border:0;padding:11px 14px;border-radius:12px;font-weight:900}.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:10px 12px;border-radius:12px;font-weight:700}
+.item{display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #27314a}.item:last-child{border:0}.item input[type=checkbox]{width:20px;height:20px;accent-color:var(--cyan);margin-top:2px;flex:none}.item.done .itemtext{text-decoration:line-through;opacity:.5}
+h2{font-size:20px;margin:8px 0 12px}h3{font-size:15px;margin:0 0 6px}p{margin:5px 0}.tag{display:inline-block;border:1px solid #31515b;color:var(--cyan);padding:3px 8px;border-radius:999px;font-size:11px;font-weight:800}
+.mealtime{color:var(--pink);font-size:12px;font-weight:800}.exercise{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid #26314a}.exercise:last-child{border:0}.exercise input{width:68px;background:#080d1b;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 4px}input,select,textarea{font:inherit}input[type=number],input[type=date],input[type=text],textarea,select{width:100%;padding:11px;background:#080d1b;color:var(--text);border:1px solid var(--line);border-radius:10px}
+form .grid{gap:8px}.notice{border-left:3px solid var(--yellow);padding:9px 12px;background:#29231355;color:#e8d9ae;border-radius:0 10px 10px 0;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:9px 5px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:11px;text-transform:uppercase}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#061016;padding:10px 16px;border-radius:999px;font-weight:800;display:none;z-index:10}
+@media(min-width:700px){main{padding-top:18px}.grid4{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="brand">NEON // TRAINING SYSTEM</div><h1>PHYSIQUE PROTOCOL</h1><p>Build the frame. Track the work. Repeat.</p></header>
+<nav id="tabs">
+<button class="active" data-tab="home">Dashboard</button><button data-tab="nutrition">Nutrition</button><button data-tab="training">Training</button><button data-tab="schedule">Schedule</button><button data-tab="progress">Progress</button><button data-tab="grocery">Groceries</button>
+</nav>
+<main>
+<section class="view active" id="home">
+ <div class="card">
+  <div class="row"><div><div class="eyebrow" id="todayLabel">TODAY'S STATUS</div><h2 id="dayTitle">Daily mission</h2></div><span class="tag">7 AM–5 PM WORK</span></div>
+  <div class="grid grid4">
+   <div class="stat"><strong id="calNow">0</strong><span>Calories logged</span></div>
+   <div class="stat"><strong id="proteinNow">0g</strong><span>Protein logged</span></div>
+   <div class="stat"><strong id="waterNow">0</strong><span>Water (L)</span></div>
+   <div class="stat"><strong id="tasksNow">0/5</strong><span>Meals checked</span></div>
+  </div>
+ </div>
+ <div class="card"><div class="row"><h2>Daily targets</h2><span class="tiny">Editable in Nutrition</span></div>
+  <div id="targetBars"></div>
+ </div>
+ <div class="card"><div class="row"><h2>Today's checklist</h2><button class="secondary" onclick="resetDay()">Reset day</button></div><div id="homeTasks"></div></div>
+ <div class="card"><h2>Next up</h2><div id="nextUp" class="muted">Check your schedule and meals.</div></div>
+ <div class="notice">Nutrition values are estimates. Your target is a starting point; adjust from 2–3 weeks of morning weigh-ins, waist measurements and gym performance.</div>
+</section>
+
+<section class="view" id="nutrition">
+ <div class="card"><div class="eyebrow">Fuel protocol</div><h2>Daily macro targets</h2>
+  <div class="grid">
+   <div><label>Calories</label><input id="goalCal" type="number" value="2800"></div>
+   <div><label>Protein (g)</label><input id="goalProtein" type="number" value="190"></div>
+   <div><label>Carbs (g)</label><input id="goalCarbs" type="number" value="330"></div>
+   <div><label>Fat (g)</label><input id="goalFat" type="number" value="80"></div>
+  </div><button class="action" style="margin-top:12px" onclick="saveGoals()">Save targets</button>
+ </div>
+ <div class="card"><h2>Meal plan</h2><p class="tiny">Tap each meal when completed. Portions and estimates can be edited in a future version.</p><div id="mealList"></div></div>
+ <div class="card"><div class="row"><h2>Water tracker</h2><strong id="waterLabel">0 / 3 L</strong></div><div class="row"><button class="secondary" onclick="addWater(-0.25)">− 250 ml</button><button class="action" onclick="addWater(0.25)">+ 250 ml</button></div><p class="tiny">Adjust fluids for heat, sweat and thirst. Don't force excessive water.</p></div>
+ <div class="card"><h2>Nutrition notes</h2><p class="muted">Use food labels and a kitchen scale for accurate totals. Weigh beef consistently (raw or cooked) and match the database entry. Keep milk-based shakes cold with an ice pack.</p></div>
+</section>
+
+<section class="view" id="training">
+ <div class="card"><div class="eyebrow">4-day upper / lower</div><h2>Weekly training split</h2><div class="grid">
+  <div class="stat"><strong>MON</strong><span>Upper A</span></div><div class="stat"><strong>TUE</strong><span>Lower A + abs</span></div><div class="stat"><strong>THU</strong><span>Upper B</span></div><div class="stat"><strong>SAT</strong><span>Lower B + abs</span></div>
+ </div><p class="tiny" style="margin-top:10px">Most working sets: finish with 1–3 reps in reserve. Rest 2–3 min on compound lifts and 1–2 min on isolation work.</p></div>
+ <div id="workoutCards"></div>
+ <div class="notice">Progression: when every set reaches the top of its rep range with clean form, increase the load slightly. Record weights below. Stop for sharp pain.</div>
+</section>
+
+<section class="view" id="schedule">
+ <div class="card"><div class="eyebrow">Daily operating rhythm</div><h2>Workday schedule</h2><div id="scheduleList"></div></div>
+ <div class="card"><h2>Weekly rhythm</h2><table><tr><th>Day</th><th>Training</th></tr><tr><td>Monday</td><td>Upper A</td></tr><tr><td>Tuesday</td><td>Lower A</td></tr><tr><td>Wednesday</td><td>Recovery / walk</td></tr><tr><td>Thursday</td><td>Upper B</td></tr><tr><td>Friday</td><td>Rest</td></tr><tr><td>Saturday</td><td>Lower B</td></tr><tr><td>Sunday</td><td>Rest / meal prep</td></tr></table></div>
+</section>
+
+<section class="view" id="progress">
+ <div class="card"><div class="eyebrow">Performance archive</div><h2>Log your progress</h2>
+  <form id="progressForm">
+   <div class="grid"><div><label>Date</label><input id="pDate" type="date" required></div><div><label>Weight (lb)</label><input id="pWeight" type="number" step=".1" placeholder="188"></div><div><label>Waist (in)</label><input id="pWaist" type="number" step=".1" placeholder="e.g. 33"></div><div><label>Sleep (hours)</label><input id="pSleep" type="number" step=".1" placeholder="7.5"></div></div>
+   <label>Notes / strength PRs</label><textarea id="pNotes" rows="3" placeholder="Energy, lifts, measurements, how you feel..."></textarea>
+   <button class="action" style="margin-top:12px" type="submit">Save progress entry</button>
+  </form>
+ </div>
+ <div class="card"><div class="row"><h2>History</h2><button class="secondary" onclick="exportData()">Export CSV</button></div><div id="history"></div></div>
+ <div class="card"><h2>Progress rules</h2><p class="muted">Weigh each morning after the bathroom and compare weekly averages. A reasonable initial fat-loss pace is about 0.5–1 lb/week. If weight and waist are unchanged for 2–3 weeks, consider a small calorie adjustment. If strength and recovery collapse, reassess the deficit.</p></div>
+</section>
+
+<section class="view" id="grocery">
+ <div class="card"><div class="eyebrow">7-day supply</div><h2>Weekly grocery list</h2><p class="tiny">Quantities follow the current meal template. Tick items as you shop.</p><div id="groceryList"></div><button class="secondary" onclick="clearGroceries()">Clear grocery ticks</button></div>
+ <div class="card"><h2>Meal prep day</h2><ul class="muted"><li>Cook beef and portion it safely.</li><li>Batch-cook rice and potatoes.</li><li>Prepare green beans.</li><li>Refrigerate meals for the next 3–4 days; freeze later portions.</li><li>Prepare smoothie ingredients and keep dairy cold.</li></ul></div>
+</section>
+<footer>NEON // PHYSIQUE · Personal tracker · Data stays in this browser on this device.</footer>
+</main><div id="toast"></div>
+<script>
+const meals=[
+ {time:"5:30 AM",name:"Breakfast",items:["3 whole eggs","3 slices whole-wheat toast","1 banana","250 ml 2% milk"],kcal:700,p:38,c:75,f:27},
+ {time:"8:30 AM",name:"Work smoothie",items:["1 scoop whey","350 ml 2% milk","1 banana","40 g oats"],kcal:520,p:42,c:67,f:12},
+ {time:"10:00 AM",name:"Work meal",items:["200 g cooked 90% lean ground beef","300 g cooked white rice","150 g green beans"],kcal:800,p:58,c:90,f:25},
+ {time:"2:00 PM",name:"Work shake",items:["1 scoop whey","350 ml 2% milk"],kcal:300,p:34,c:18,f:10},
+ {time:"7:30 PM",name:"Dinner",items:["200 g cooked lean ground beef","350 g potatoes","150 g green beans","200 g plain Greek yogurt"],kcal:750,p:70,c:75,f:25}
+];
+const workouts=[
+ {day:"MONDAY · UPPER A",name:"Chest & shoulders",ex:[["Incline dumbbell press","3 × 6–10"],["Flat barbell bench press","3 × 6–10"],["Cable lateral raises","4 × 12–20"],["Pull-ups / lat pulldowns","3 × 8–12"],["Seated cable row","3 × 8–12"],["Triceps rope pushdowns","2 × 10–15"],["Dumbbell curls","2 × 10–15"]]},
+ {day:"TUESDAY · LOWER A",name:"Legs & abs",ex:[["Barbell squats","3 × 6–10"],["Romanian deadlifts","3 × 8–10"],["Leg press","3 × 10–12"],["Lying leg curls","3 × 10–15"],["Standing calf raises","3 × 12–20"],["Hanging leg raises","3 × 10–15"],["Cable crunches","3 × 12–15"]]},
+ {day:"THURSDAY · UPPER B",name:"V-taper & arms",ex:[["Weighted pull-ups / pulldowns","3 × 6–10"],["Chest-supported rows","3 × 8–12"],["Incline machine chest press","3 × 8–12"],["Dumbbell shoulder press","3 × 8–12"],["Rear delt cable fly","3 × 12–20"],["Dumbbell lateral raises","3 × 12–20"],["EZ-bar curls","3 × 8–12"],["Overhead triceps extensions","3 × 10–15"]]},
+ {day:"SATURDAY · LOWER B",name:"Legs & core",ex:[["Hack squat","3 × 8–12"],["Bulgarian split squats","3 × 8–10 each"],["Hip thrusts","3 × 8–12"],["Seated leg curls","3 × 10–15"],["Seated calf raises","3 × 12–20"],["Ab wheel rollouts","3 × 8–12"],["Cable woodchoppers","3 × 12 each"]]}
+];
+const schedule=[["5:30 AM","Breakfast"],["6:15 AM","Commute / prepare for work"],["7:00 AM–5:00 PM","Construction work"],["8:30 AM","Work smoothie"],["10:00 AM","Solid work meal"],["2:00 PM","Protein shake"],["5:15 PM","Home / pre-workout transition"],["5:45–7:00 PM","Gym on training days"],["7:30 PM","Dinner"],["8:00–9:15 PM","Personal time + prepare tomorrow"],["9:30 PM","Sleep target"]];
+const groceries=["90% lean ground beef — approx. 2.8 kg raw","Eggs — 21","Whole-wheat bread — 1 loaf","White rice — approx. 1.0–1.2 kg dry","Potatoes — 2.45 kg","Green beans — 2.1 kg","Bananas — 14","2% milk — 4.9 litres","Whey protein — 14 scoops","Plain Greek yogurt — 1.4 kg","Oats — 280 g"];
+const today=()=>new Date().toISOString().slice(0,10);
+let state=JSON.parse(localStorage.getItem("neonPhysique")||"{}");
+state.logs ||= {}; state.progress ||= []; state.weights ||= {}; state.groceries ||= {}; state.goals ||= {cal:2800,p:190,c:330,f:80};
+function save(){localStorage.setItem("neonPhysique",JSON.stringify(state));renderHome()}
+function dayState(){return state.logs[today()] ||= {meals:{},water:0}}
+function toast(s){let t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",1800)}
+function mealTotals(){let d=dayState(),x={cal:0,p:0,c:0,f:0};meals.forEach((m,i)=>{if(d.meals[i]){x.cal+=m.kcal;x.p+=m.p;x.c+=m.c;x.f+=m.f}});return x}
+function renderHome(){let d=dayState(),t=mealTotals();document.getElementById("todayLabel").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"}).toUpperCase();document.getElementById("calNow").textContent=t.cal;document.getElementById("proteinNow").textContent=t.p+"g";document.getElementById("waterNow").textContent=d.water.toFixed(2);document.getElementById("tasksNow").textContent=Object.values(d.meals).filter(Boolean).length+"/5";
+let goals=state.goals;document.getElementById("targetBars").innerHTML=[["Calories",t.cal,goals.cal,"kcal"],["Protein",t.p,goals.p,"g"],["Carbs",t.c,goals.c,"g"],["Fat",t.f,goals.f,"g"]].map(a=>`<div style="margin:10px 0"><div class="row"><span>${a[0]}</span><span class="tiny">${a[1]} / ${a[2]} ${a[3]}</span></div><div class="progress"><i style="width:${Math.min(100,a[1]/a[2]*100)}%"></i></div></div>`).join("");
+document.getElementById("homeTasks").innerHTML=meals.map((m,i)=>`<div class="item ${d.meals[i]?'done':''}"><input type="checkbox" ${d.meals[i]?'checked':''} onchange="toggleMeal(${i},this.checked)"><div class="itemtext"><b>${m.time} · ${m.name}</b><div class="tiny">${m.kcal} kcal · ${m.p}g protein</div></div></div>`).join("");
+let h=new Date().getDay(),next=({1:"Upper A",2:"Lower A",4:"Upper B",6:"Lower B"})[h]||"Recovery / rest";document.getElementById("nextUp").textContent=next+" · Keep the session controlled and log your working weights.";
+}
+function toggleMeal(i,v){dayState().meals[i]=v;save();renderMeals()}
+function renderMeals(){let d=dayState();document.getElementById("mealList").innerHTML=meals.map((m,i)=>`<div class="item ${d.meals[i]?'done':''}"><input type="checkbox" ${d.meals[i]?'checked':''} onchange="toggleMeal(${i},this.checked)"><div class="itemtext"><div class="mealtime">${m.time}</div><h3>${m.name}</h3><div>${m.items.join(" · ")}</div><div class="tiny">${m.kcal} kcal · ${m.p}g protein · ${m.c}g carbs · ${m.f}g fat</div></div></div>`).join("");document.getElementById("waterLabel").textContent=d.water.toFixed(2)+" / 3 L"}
+function addWater(n){dayState().water=Math.max(0,Math.round((dayState().water+n)*4)/4);save();renderMeals();toast("Water updated")}
+function saveGoals(){state.goals={cal:+goalCal.value,p:+goalProtein.value,c:+goalCarbs.value,f:+goalFat.value};save();toast("Targets saved")}
+function renderWorkouts(){document.getElementById("workoutCards").innerHTML=workouts.map((w,wi)=>`<div class="card"><div class="eyebrow">${w.day}</div><h2>${w.name}</h2>${w.ex.map((e,ei)=>`<div class="exercise"><div><b>${e[0]}</b><div class="tiny">${e[1]}</div></div><div><label>Weight</label><input type="text" placeholder="kg / lb" value="${state.weights[wi+"-"+ei]||""}" onchange="state.weights['${wi}-${ei}']=this.value;localStorage.setItem('neonPhysique',JSON.stringify(state))"></div></div>`).join("")}</div>`).join("")}
+function renderSchedule(){document.getElementById("scheduleList").innerHTML=schedule.map(s=>`<div class="item"><div class="mealtime" style="min-width:112px">${s[0]}</div><div>${s[1]}</div></div>`).join("")}
+function renderGroceries(){document.getElementById("groceryList").innerHTML=groceries.map((g,i)=>`<div class="item ${state.groceries[i]?'done':''}"><input type="checkbox" ${state.groceries[i]?'checked':''} onchange="state.groceries[${i}]=this.checked;localStorage.setItem('neonPhysique',JSON.stringify(state));renderGroceries()"><div class="itemtext">${g}</div></div>`).join("")}
+function clearGroceries(){state.groceries={};localStorage.setItem("neonPhysique",JSON.stringify(state));renderGroceries()}
+document.getElementById("progressForm").addEventListener("submit",e=>{e.preventDefault();state.progress.unshift({date:pDate.value,weight:pWeight.value,waist:pWaist.value,sleep:pSleep.value,notes:pNotes.value});localStorage.setItem("neonPhysique",JSON.stringify(state));e.target.reset();pDate.value=today();renderHistory();toast("Progress saved")});
+function renderHistory(){document.getElementById("history").innerHTML=state.progress.length?`<table><tr><th>Date</th><th>Weight</th><th>Waist</th><th>Sleep</th><th>Notes</th></tr>${state.progress.map(x=>`<tr><td>${x.date}</td><td>${x.weight||"—"}</td><td>${x.waist||"—"}</td><td>${x.sleep||"—"}</td><td>${(x.notes||"").replace(/</g,"&lt;")}</td></tr>`).join("")}</table>`:"<p class='muted'>No entries yet. Add your first weigh-in above.</p>"}
+function exportData(){let rows=[["date","weight_lb","waist_in","sleep_hours","notes"],...state.progress.map(x=>[x.date,x.weight,x.waist,x.sleep,x.notes])];let csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="physique-progress.csv";a.click();URL.revokeObjectURL(a.href)}
+function resetDay(){if(confirm("Clear today's meal and water check-ins?")){state.logs[today()]={meals:{},water:0};save();renderMeals()}}
+document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")}));
+goalCal.value=state.goals.cal;goalProtein.value=state.goals.p;goalCarbs.value=state.goals.c;goalFat.value=state.goals.f;pDate.value=today();
+renderHome();renderMeals();renderWorkouts();renderSchedule();renderGroceries();renderHistory();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body></html>
